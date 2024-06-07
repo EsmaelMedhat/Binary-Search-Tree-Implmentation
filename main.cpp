@@ -28,6 +28,10 @@ class BinarySearchTree{
 private:
 	Node*MainRoot;
     int length;
+    int depth;
+    int left_depth;
+    int right_depth;
+    int depthByAnotherWay ;
 Node* insert(int data,Node*root){
    if(root==NULL)
 {
@@ -36,9 +40,10 @@ newnode->set_data(data);
 root=newnode;
 length++;
 }
-else if(data>=root->get_data())
+else if(data>=root->get_data()){
+right_depth++;
 root->set_rigthchild(insert(data,root->get_Rightchild()));
-else root->set_leftchild(insert(data,root->get_Leftchild()));
+}else{ left_depth++;root->set_leftchild(insert(data,root->get_Leftchild()));}
 
 return root;
 	}
@@ -120,12 +125,32 @@ Node* Delete(Node* root, int data) {
   }
   return root;
 }
+int get_depth(Node*root){
+if(root==NULL)
+ return 0;
+int l=get_depth(root->get_Leftchild());
+int r=get_depth(root->get_Rightchild());
+return 1+max(l,r);
+}
 public:
 void insert(int data){
 MainRoot=insert(data,MainRoot);
+depthByAnotherWay=get_depth(MainRoot);
+
+if(right_depth>left_depth&& right_depth>depth){
+depth=right_depth;}
+else {
+     if(left_depth>depth)
+        depth=left_depth;
 }
+right_depth=left_depth=1;
+ }
 BinarySearchTree(){MainRoot=NULL;
 length=0;
+depth=0;
+depthByAnotherWay=0;
+  left_depth=0;
+ right_depth=0;
 }
 void display(){
 PreOrder(MainRoot);
@@ -142,17 +167,28 @@ MainRoot=Delete(MainRoot,element);
 length--;
 }
 int get_size(){return length;}
+int get_depth(){
+  if(MainRoot==NULL)
+   return 0;
+    return depth;}
+int get_depthbyanotherway(){
+    if(MainRoot==NULL)
+   return 0;
+    return depthByAnotherWay;}
 };
 int main(){
 BinarySearchTree b;
 b.insert(10);
 for(int i=0;i<=20;i++)
 b.insert(i);
+
 b.insert(10000);
 b.Delete(1);
 b.Delete(15);
 b.Delete(12);
 cout<<b.get_size()<<endl;
 b.display();
+cout<<endl<<b.get_depth()<<endl;
+cout<<b.get_depthbyanotherway()<<endl;
 return 0;
 }
